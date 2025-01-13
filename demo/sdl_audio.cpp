@@ -24,20 +24,20 @@ int init_audio()
 	if ( SDL_Init( SDL_INIT_AUDIO ) < 0 )
 		return 1;
 	atexit( SDL_Quit );
-	
+
 	// Setup buffer
 	buf.clock_rate( clock_rate );
 	if ( buf.set_sample_rate( sample_rate, 1000 / frame_rate ) )
 		return 1; // out of memory
-	
+
 	// Setup synth
 	synth.volume( 0.50 );
 	synth.output( &buf );
-	
+
 	// Start audio
 	if ( audio.start( sample_rate ) )
 		return 1;
-	
+
 	return 0;
 }
 
@@ -45,7 +45,7 @@ int main( int argc, char** argv )
 {
 	if ( init_audio() )
 		return EXIT_FAILURE;
-	
+
 	// Generate sound and immediately play it
 	long time = 0;
 	int amplitude = 5;
@@ -53,7 +53,7 @@ int main( int argc, char** argv )
 	for ( int n = frame_rate * 2; n--; )
 	{
 		period++; // slowly lower pitch
-		
+
 		// Fill buffer with 1/60 second of sound
 		long length = clock_rate / frame_rate;
 		while ( time < length )
@@ -64,14 +64,14 @@ int main( int argc, char** argv )
 		}
 		buf.end_frame( length );
 		time -= length;
-		
+
 		// Read and play samples
 		long count = buf.read_samples( samples, buf_size );
 		audio.write( samples, count );
 	}
-	
+
 	audio.stop();
-	
+
 	return 0;
 }
 

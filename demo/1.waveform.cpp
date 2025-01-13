@@ -12,14 +12,14 @@ int main()
 {
 	// Setup buffer and synth (explained in later demo)
 	setup_demo( buf, synth );
-	
+
 	// 10                  ___
 	//  5      ___        |   |
 	//  0 ____|   |___    |   |________
 	// -5             |   |
 	//-10             |___|
 	//    0  100 200 300 400 500 600 700
-	
+
 	// Generate the above waveform by updating the waveform's
 	// amplitude at each time point where it changes
 	synth.update( 100,   5 );
@@ -28,13 +28,13 @@ int main()
 	synth.update( 400,  10 );
 	synth.update( 500,   0 );
 	buf.end_frame( 700 );
-	
+
 	// Display waveform
 	show_buffer( buf );
 	set_caption( "Waveform" );
 	wait_button();
-	
-	
+
+
 	// All times are relative to the beginning of the current "time frame".
 	// This generates the same waveform, split by a time frame:
 	synth.update( 100,   5 );
@@ -44,12 +44,12 @@ int main()
 	synth.update( 200,  10 );
 	synth.update( 300,   0 );
 	buf.end_frame( 500 );
-	
+
 	// Display waveform
 	show_buffer( buf );
 	set_caption( "Time Frames" );
 	wait_button();
-	
+
 	return 0;
 }
 

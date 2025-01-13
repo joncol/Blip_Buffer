@@ -48,24 +48,24 @@ Sync_Audio::~Sync_Audio()
 const char* Sync_Audio::start( long sample_rate, int chan_count, int latency )
 {
 	stop();
-	
+
 	write_buf = 0;
 	write_pos = 0;
 	read_buf = 0;
-	
+
 	long sample_latency = latency * sample_rate * chan_count / 1000;
 	buf_count = sample_latency / buf_size;
 	if ( buf_count < 2 )
 		buf_count = 2;
-	
+
 	bufs = (sample_t*) malloc( (long) buf_size * buf_count * sizeof *bufs );
 	if ( !bufs )
 		return "Out of memory";
-	
+
 	free_sem = SDL_CreateSemaphore( buf_count - 1 );
 	if ( !free_sem )
 		return sdl_error( "Couldn't create semaphore" );
-	
+
 	SDL_AudioSpec as;
 	as.freq = sample_rate;
 	as.format = AUDIO_S16SYS;
@@ -79,7 +79,7 @@ const char* Sync_Audio::start( long sample_rate, int chan_count, int latency )
 		return sdl_error( "Couldn't open SDL audio" );
 	SDL_PauseAudio( 0 );
 	sound_open = 1;
-	
+
 	return 0; // success
 }
 
@@ -91,13 +91,13 @@ void Sync_Audio::stop()
 		SDL_PauseAudio( 1 );
 		SDL_CloseAudio();
 	}
-	
+
 	if ( free_sem )
 	{
 		SDL_DestroySemaphore( free_sem );
 		free_sem = 0;
 	}
-	
+
 	free( bufs );
 	bufs = 0;
 }
@@ -106,7 +106,7 @@ int Sync_Audio::sample_count() const
 {
 	if ( !free_sem )
 		return 0;
-	
+
 	int buf_free = SDL_SemValue( free_sem ) * buf_size + (buf_size - write_pos);
 	return buf_size * buf_count - buf_free;
 }
@@ -124,7 +124,7 @@ void Sync_Audio::write( const sample_t* in, int remain )
 		int count = buf_size - write_pos;
 		if ( count > remain )
 			count = remain;
-		
+
 		sample_t* out = buf( write_buf ) + write_pos;
 		if ( gain != (1L << gain_bits) )
 		{
@@ -137,10 +137,10 @@ void Sync_Audio::write( const sample_t* in, int remain )
 			memcpy( out, in, count * sizeof (sample_t) );
 			in += count;
 		}
-		
+
 		write_pos += count;
 		remain -= count;
-		
+
 		if ( write_pos >= buf_size )
 		{
 			write_pos = 0;

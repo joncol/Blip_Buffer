@@ -34,11 +34,11 @@ Wave_Writer::Wave_Writer( long sample_rate, const char* filename )
 	rate = sample_rate;
 	buf_pos = header_size;
 	stereo( 0 );
-	
+
 	buf = (unsigned char*) malloc( buf_size * sizeof *buf );
 	if ( !buf )
 		exit_with_error( "Out of memory" );
-	
+
 	file = fopen( filename, "wb" );
 	if ( !file )
 		exit_with_error( "Couldn't open WAVE file for writing" );
@@ -58,12 +58,12 @@ void Wave_Writer::write( const sample_t* in, long remain, int skip )
 	{
 		if ( buf_pos >= buf_size )
 			flush();
-		
+
 		long n = (unsigned long) (buf_size - buf_pos) / sizeof (sample_t);
 		if ( n > remain )
 			n = remain;
 		remain -= n;
-		
+
 		// convert to lsb first format
 		unsigned char* p = &buf [buf_pos];
 		while ( n-- )
@@ -73,7 +73,7 @@ void Wave_Writer::write( const sample_t* in, long remain, int skip )
 			*p++ = (unsigned char) s;
 			*p++ = (unsigned char) (s >> 8);
 		}
-		
+
 		buf_pos = p - buf;
 		assert( buf_pos <= buf_size );
 	}
@@ -87,12 +87,12 @@ void Wave_Writer::write( const float* in, long remain, int skip )
 	{
 		if ( buf_pos >= buf_size )
 			flush();
-		
+
 		long n = (unsigned long) (buf_size - buf_pos) / sizeof (sample_t);
 		if ( n > remain )
 			n = remain;
 		remain -= n;
-		
+
 		// convert to lsb first format
 		unsigned char* p = &buf [buf_pos];
 		while ( n-- )
@@ -104,7 +104,7 @@ void Wave_Writer::write( const float* in, long remain, int skip )
 			*p++ = (unsigned char) s;
 			*p++ = (unsigned char) (s >> 8);
 		}
-		
+
 		buf_pos = p - buf;
 		assert( buf_pos <= buf_size );
 	}
@@ -114,7 +114,7 @@ void Wave_Writer::write( const float* in, long remain, int skip )
 Wave_Writer::~Wave_Writer()
 {
 	flush();
-	
+
 	// generate header
 	long ds = sample_count_ * sizeof (sample_t);
 	long rs = header_size - 8 + ds;
@@ -139,11 +139,11 @@ Wave_Writer::~Wave_Writer()
 		ds,ds>>8,ds>>16,ds>>24// size of sample data
 		// ...              // sample data
 	};
-	
+
 	// write header
 	fseek( file, 0, SEEK_SET );
 	fwrite( header, sizeof header, 1, file );
-	
+
 	fclose( file );
 	free( buf );
 }

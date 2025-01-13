@@ -55,20 +55,20 @@ int main( int, char** )
 	sample_buf = (blip_sample_t*) malloc( buf_size * sizeof *sample_buf );
 	if ( !sample_buf )
 		handle_error( "Out of memory" );
-	
+
 	// video must be initialized for events to work
 	if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
 		handle_error( "Couldn't initialize SDL multimedia library" );
 	atexit( SDL_Quit );
-	
+
 	handle_error( scope.init( scope_width, scope_height ) );
-	
+
 	int result = demo_main();
-	
+
 	while ( audio.sample_count() > 1024 ) { }
 	audio.stop();
 	free( sample_buf );
-	
+
 	return result;
 }
 
@@ -84,14 +84,14 @@ static void poll_events()
 	{
 		if ( e.type == SDL_MOUSEBUTTONDOWN )
 			button_pressed_ = 1;
-		
+
 		if ( e.type == SDL_KEYDOWN )
 		{
 			button_pressed_ = 1;
 			if ( e.key.keysym.sym == SDLK_ESCAPE || e.key.keysym.sym == SDLK_q )
 				e.type = SDL_QUIT;
 		}
-		
+
 		if ( e.type == SDL_QUIT )
 		{
 			audio.stop();
@@ -104,7 +104,7 @@ int button_pressed()
 {
 	if ( !button_pressed_ )
 		poll_events();
-	
+
 	int result = button_pressed_;
 	button_pressed_ = 0;
 	return result;
@@ -149,7 +149,7 @@ void play_samples( const short* samples, long count )
 			scope.draw( samples, scope_width + 1, chan_count ); // assumes count >= scope_width
 		audio.write( samples, count );
 	}
-	
+
 	poll_events();
 }
 
@@ -171,9 +171,9 @@ void show_buffer_unscaled( Blip_Buffer& in )
 	long count = in.read_samples( buf, scope_width );
 	while ( count < scope_width )
 		buf [count++] = 0;
-	
+
 	scope.draw( buf, scope_width );
-	
+
 	// remove remaining samples
 	while ( in.read_samples( buf, scope_width ) ) { }
 }

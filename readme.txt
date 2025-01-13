@@ -53,7 +53,7 @@ demo/                   Tutorials and demos
   delta_synth.cpp       How to use low-level delta mode of Blip_Synth
   sample_formats.cpp    Reading samples in floating-point and unsigned formats
   sdl_audio.cpp         Complete example for programs using SDL sound
-  
+
 player/                 Use with demos to write output to wave sound file
   player.h              Demo player and utilities
   player.cpp
