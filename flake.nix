@@ -13,12 +13,7 @@
       perSystem = { config, self', inputs', pkgs, system, ... }: {
         devShells.default =
           pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
-            packages = with pkgs; [
-              clang-tools
-              cmake
-              qt6.qtbase
-              qt6.qtwebsockets
-            ];
+            packages = with pkgs; [ bear cmake clang-tools SDL ];
           };
       };
     };
